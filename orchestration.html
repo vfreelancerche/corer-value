@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoreValue | Orchestration</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --nvidia-green: #76b900;
+            --nvidia-dark-green: #5a8f00;
+            --dark: #000000;
+            --dark-light: #1a1a1a;
+            --dark-lighter: #2a2a2a;
+            --text: #ffffff;
+            --text-muted: #a0a0a0;
+            --border: #333333;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--dark);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .logo span {
+            color: var(--nvidia-green);
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--nvidia-green);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 10rem 5% 6rem;
+            background: radial-gradient(ellipse at top, rgba(118, 185, 0, 0.1), transparent 50%);
+        }
+
+        .hero h1 {
+            font-size: 4.5rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+            font-weight: 700;
+        }
+
+        .highlight {
+            color: var(--nvidia-green);
+        }
+
+        .hero p {
+            font-size: 1.4rem;
+            color: var(--text-muted);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Section */
+        .section {
+            padding: 8rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section h2 {
+            font-size: 3rem;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        /* Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--dark-lighter);
+            padding: 2.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--nvidia-green);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            border-color: var(--nvidia-green);
+            transform: translateY(-5px);
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text);
+        }
+
+        .card p {
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 5%;
+            background: var(--dark-light);
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+
+            .section h2 {
+                font-size: 2.2rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="logo">Core<span>Value</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="orchestration.html">Orchestration</a></li>
+            <li><a href="monitoring.html">Monitoring</a></li>
+            <li><a href="cost.html">Cost</a></li>
+            <li><a href="security.html">Security</a></li>
+        </ul>
+    </nav>
+
+    <section class="hero">
+        <div>
+            <h1>AI Infrastructure <span class="highlight">Orchestration</span></h1>
+            <p>Smart scheduling across GPU, TPU, NPU, and LPU workloads in real time.</p>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2>What We Orchestrate</h2>
+
+        <div class="grid">
+            <div class="card">
+                <h3>GPU Clusters</h3>
+                <p>Auto workload distribution for deep learning and training with intelligent resource allocation.</p>
+            </div>
+
+            <div class="card">
+                <h3>TPU Pods</h3>
+                <p>Optimized large-scale model training with seamless multi-cloud orchestration.</p>
+            </div>
+
+            <div class="card">
+                <h3>NPU Edge AI</h3>
+                <p>Low-latency processing for IoT and mobile with smart edge deployment.</p>
+            </div>
+
+            <div class="card">
+                <h3>LPU Acceleration</h3>
+                <p>Specialized AI chip scheduling for next-generation inference workloads.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>© 2026 CoreValue. All rights reserved.</footer>
+
+</body>
+</html>

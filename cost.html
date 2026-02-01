@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoreValue | Cost Optimization</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --nvidia-green: #76b900;
+            --nvidia-dark-green: #5a8f00;
+            --dark: #000000;
+            --dark-light: #1a1a1a;
+            --dark-lighter: #2a2a2a;
+            --text: #ffffff;
+            --text-muted: #a0a0a0;
+            --border: #333333;
+        }
+
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--dark);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .logo span {
+            color: var(--nvidia-green);
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--nvidia-green);
+        }
+
+        .hero {
+            min-height: 60vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 10rem 5% 6rem;
+            background: radial-gradient(ellipse at top, rgba(118, 185, 0, 0.1), transparent 50%);
+        }
+
+        .hero-content {
+            max-width: 1000px;
+        }
+
+        .hero h1 {
+            font-size: 4.5rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+            font-weight: 700;
+        }
+
+        .highlight {
+            color: var(--nvidia-green);
+        }
+
+        .hero p {
+            font-size: 1.4rem;
+            color: var(--text-muted);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .feature-section {
+            padding: 8rem 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .feature-section h2 {
+            font-size: 3rem;
+            margin-bottom: 4rem;
+            text-align: center;
+        }
+
+        .savings-showcase {
+            background: var(--dark-light);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 4rem;
+            margin-bottom: 6rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .savings-showcase::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--nvidia-green), transparent);
+        }
+
+        .savings-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .stat-item h3 {
+            font-size: 3.5rem;
+            color: var(--nvidia-green);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-item p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 6rem;
+        }
+
+        .metric-card {
+            background: var(--dark-lighter);
+            padding: 3rem 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--nvidia-green);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .metric-card:hover {
+            border-color: var(--nvidia-green);
+            transform: translateY(-10px);
+        }
+
+        .metric-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .metric-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .metric-label {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+
+        .metric-subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .metric-detail {
+            color: var(--nvidia-green);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .two-col-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: start;
+            margin-bottom: 6rem;
+        }
+
+        .strategy-list {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .strategy-item {
+            background: var(--dark-lighter);
+            padding: 2rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--nvidia-green);
+        }
+
+        .strategy-item h4 {
+            color: var(--nvidia-green);
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .strategy-item p {
+            color: var(--text-muted);
+            line-height: 1.7;
+        }
+
+        .cost-breakdown {
+            background: var(--dark-lighter);
+            padding: 3rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .cost-breakdown h3 {
+            color: var(--nvidia-green);
+            margin-bottom: 2rem;
+            font-size: 1.8rem;
+        }
+
+        .progress-item {
+            margin-bottom: 2rem;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-bar {
+            background: var(--dark);
+            height: 12px;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--nvidia-green);
+            transition: width 1s ease-out;
+        }
+
+        .use-case-section {
+            background: var(--dark-light);
+            padding: 6rem 5%;
+            margin-top: 4rem;
+        }
+
+        .use-case-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .use-case-card {
+            background: var(--dark);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2.5rem;
+            transition: all 0.3s;
+        }
+
+        .use-case-card:hover {
+            border-color: var(--nvidia-green);
+            transform: translateY(-5px);
+        }
+
+        .use-case-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .use-case-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(118, 185, 0, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .use-case-card h4 {
+            font-size: 1.3rem;
+        }
+
+        .use-case-card p {
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 1rem;
+        }
+
+        .savings-badge {
+            display: inline-block;
+            background: rgba(118, 185, 0, 0.2);
+            color: var(--nvidia-green);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            padding: 3rem 5%;
+            background: var(--dark-light);
+            border-top: 1px solid var(--border);
+        }
+
+        footer p {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 968px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 3rem;
+            }
+
+            .feature-section h2 {
+                font-size: 2.2rem;
+            }
+
+            .two-col-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .use-case-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .savings-showcase {
+                padding: 2rem;
+            }
+
+            .stat-item h3 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">Core<span>Value</span></div>
+        <div class="nav-menu">
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="orchestration.html">Orchestration</a></li>
+                <li><a href="monitoring.html">Monitoring</a></li>
+                <li><a href="cost.html">Cost Optimization</a></li>
+                <li><a href="security.html">Security</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>GPU Cost <span class="highlight">Optimization</span></h1>
+            <p>Slash your GPU infrastructure costs by up to 70% with intelligent orchestration, auto-scaling, and ML-powered resource allocation.</p>
+        </div>
+    </section>
+
+    <section class="feature-section">
+        <div class="savings-showcase">
+            <h2 style="text-align: center; margin-bottom: 1rem;">Real Savings, Real Impact</h2>
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 3rem; font-size: 1.1rem;">Companies using CoreValue have reduced their GPU costs dramatically</p>
+            
+            <div class="savings-stats">
+                <div class="stat-item">
+                    <h3>$2.4M</h3>
+                    <p>Average Annual Savings</p>
+                </div>
+                <div class="stat-item">
+                    <h3>68%</h3>
+                    <p>Cost Reduction</p>
+                </div>
+                <div class="stat-item">
+                    <h3>3 Days</h3>
+                    <p>Time to ROI</p>
+                </div>
+                <div class="stat-item">
+                    <h3>24/7</h3>
+                    <p>Automated Optimization</p>
+                </div>
+            </div>
+        </div>
+
+        <h2>How We Optimize GPU Costs</h2>
+
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-icon">🚀</div>
+                <div class="metric-label">Smart Auto-Scaling</div>
+                <div class="metric-subtitle">Automatically scale GPU clusters up or down based on real-time workload demand</div>
+                <div class="metric-detail">↓ 45% reduction in idle costs</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon">💡</div>
+                <div class="metric-label">Spot Instance Intelligence</div>
+                <div class="metric-subtitle">Leverage spot instances with smart fallback strategies for non-critical workloads</div>
+                <div class="metric-detail">↓ 90% savings on spot instances</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon">📊</div>
+                <div class="metric-label">Resource Rightsizing</div>
+                <div class="metric-subtitle">ML algorithms analyze usage patterns and recommend optimal GPU configurations</div>
+                <div class="metric-detail">↓ 35% through rightsizing</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon">⏰</div>
+                <div class="metric-label">Idle Shutdown</div>
+                <div class="metric-subtitle">Detect and automatically terminate idle GPUs with configurable grace periods</div>
+                <div class="metric-detail">↓ 50% idle resource waste</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon">🎯</div>
+                <div class="metric-label">Workload Optimization</div>
+                <div class="metric-subtitle">Route training jobs to the most cost-effective GPU types (A100, H100, V100)</div>
+                <div class="metric-detail">↓ 28% through smart routing</div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon">💰</div>
+                <div class="metric-label">Budget Controls</div>
+                <div class="metric-subtitle">Set spending limits per team, project, or workload with real-time enforcement</div>
+                <div class="metric-detail">100% budget compliance</div>
+            </div>
+        </div>
+
+        <div class="two-col-grid">
+            <div>
+                <h3 style="font-size: 2rem; margin-bottom: 2rem;">Optimization Strategies</h3>
+                
+                <div class="strategy-list">
+                    <div class="strategy-item">
+                        <h4>Multi-Cloud Arbitrage</h4>
+                        <p>Automatically route workloads to the cheapest cloud provider in real-time. Compare prices across AWS, GCP, and Azure to find the best rates for your GPU needs.</p>
+                    </div>
+                    
+                    <div class="strategy-item">
+                        <h4>Preemptible GPU Management</h4>
+                        <p>Use preemptible/spot instances for fault-tolerant workloads with intelligent checkpointing and automatic failover to on-demand when necessary.</p>
+                    </div>
+                    
+                    <div class="strategy-item">
+                        <h4>Batch Job Consolidation</h4>
+                        <p>Queue and batch similar workloads to maximize GPU utilization and minimize startup/shutdown overhead costs.</p>
+                    </div>
+                    
+                    <div class="strategy-item">
+                        <h4>Reserved Capacity Planning</h4>
+                        <p>Analyze historical patterns to recommend optimal reserved instance purchases for predictable workloads, saving up to 60% vs on-demand.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="cost-breakdown">
+                <h3>Monthly Cost Breakdown</h3>
+                <p style="color: var(--text-muted); margin-bottom: 2rem;">See where your GPU spend goes and how much you save</p>
+                
+                <div class="progress-item">
+                    <div class="progress-header">
+                        <span>Before CoreValue</span>
+                        <span style="color: #ff4444;">$156,000</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 100%; background: #ff4444;"></div>
+                    </div>
+                </div>
+                
+                <div class="progress-item">
+                    <div class="progress-header">
+                        <span>After CoreValue</span>
+                        <span style="color: var(--nvidia-green);">$49,920</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 32%;"></div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(118, 185, 0, 0.1); border-radius: 8px; border: 1px solid var(--nvidia-green);">
+                    <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem;">Total Monthly Savings</div>
+                    <div style="font-size: 2.5rem; font-weight: 700; color: var(--nvidia-green);">$106,080</div>
+                    <div style="font-size: 0.9rem; color: var(--text-muted); margin-top: 0.5rem;">68% cost reduction</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="use-case-section">
+        <div style="max-width: 1400px; margin: 0 auto;">
+            <h2 style="text-align: center; margin-bottom: 1rem; font-size: 3rem;">Real-World Success Stories</h2>
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 4rem; font-size: 1.2rem;">See how companies are slashing GPU costs with CoreValue</p>
+            
+            <div class="use-case-grid">
+                <div class="use-case-card">
+                    <div class="use-case-header">
+                        <div class="use-case-icon">🤖</div>
+                        <h4>AI Startup</h4>
+                    </div>
+                    <p>Reduced training costs from $180K to $58K per month by automatically using spot instances and optimizing cluster sizes.</p>
+                    <span class="savings-badge">67% Savings</span>
+                </div>
+
+                <div class="use-case-card">
+                    <div class="use-case-header">
+                        <div class="use-case-icon">🏢</div>
+                        <h4>Enterprise ML Team</h4>
+                    </div>
+                    <p>Eliminated $2.1M in annual waste by shutting down idle GPUs and rightsizing overprovisioned clusters across 15 projects.</p>
+                    <span class="savings-badge">72% Savings</span>
+                </div>
+
+                <div class="use-case-card">
+                    <div class="use-case-header">
+                        <div class="use-case-icon">🎮</div>
+                        <h4>Gaming Company</h4>
+                    </div>
+                    <p>Optimized rendering farm costs by scheduling batch jobs during off-peak hours and using multi-cloud arbitrage.</p>
+                    <span class="savings-badge">55% Savings</span>
+                </div>
+
+                <div class="use-case-card">
+                    <div class="use-case-header">
+                        <div class="use-case-icon">🔬</div>
+                        <h4>Research Lab</h4>
+                    </div>
+                    <p>Cut research compute budget by 61% through intelligent workload scheduling and automated resource deallocation.</p>
+                    <span class="savings-badge">61% Savings</span>
+                </div>
+
+                <div class="use-case-card">
+                    <div class="use-case-header">
+                        <div class="use-case-icon">🎬</div>
+                        <h4>Media Production</h4>
+                    </div>
+                    <p>Reduced video rendering costs by $95K monthly using dynamic scaling and spot instance fallback strategies.</p>
+                    <span class="savings-badge">58% Savings</span>
+                </div>
+
+                <div class="use-case-card">
+                    <div class="use-case-header">
+                        <div class="use-case-icon">💊</div>
+                        <h4>Pharma Research</h4>
+                    </div>
+                    <p>Optimized drug discovery simulations by distributing workloads across the most cost-effective GPU types in real-time.</p>
+                    <span class="savings-badge">64% Savings</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2026 CoreValue. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
